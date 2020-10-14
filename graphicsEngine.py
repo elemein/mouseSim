@@ -16,13 +16,16 @@ class g_engine:
         for idx, line in enumerate(self.map):
             self.map[idx] = list(line) # Take the list of tile values and turn self.map into a 2d-array.
 
-    def g_engine_update(self, active_rats):
+    def g_engine_update(self, active_rats, active_objects):
 
         self.reset_map()
 
         # check for animal movements
         for rat in active_rats:
-            self.map[rat.y_pos][rat.x_pos] = rat.tile_value
+            self.map[rat.position["Y"]][rat.position["X"]] = rat.tile_value
+
+        for object in active_objects:
+            self.map[object.position["Y"]][object.position["X"]] = object.tile_value
 
         self.print_map()
 
@@ -35,11 +38,9 @@ class g_engine:
 
         print('\n'*80)
 
-        for line in self.map:
+        for line in reversed(self.map):
             g_tile = ""
             for tile in line:
                 g_tile += tile
 
             print(g_tile)
-
-        print("\n")
