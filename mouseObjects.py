@@ -31,12 +31,13 @@ class rat:
         self.hydration = hydration
         self.fullness = hunger
         self.position = {"X": x_pos, "Y": y_pos}
-        self.goal = {"Current Goal": ""}
+        self.goal = {"Goal" : ""}
         self.view_range = 2
         self.in_sight = []
 
-    def run_behaviour(self, active_rats, g_engine):
+        self.goal_to_plan = {"Find" : self.search, "Consume": self.consume}
 
+    def run_behaviour(self, active_rats, g_engine):
         self.hydration -= 1
         self.fullness -= 1
 
@@ -46,13 +47,9 @@ class rat:
         # Get whats in vision. What can I do about my needs w/ whats near?
         self.examine_surroundings(active_rats, g_engine)
 
-
-
         #i last was here
 
-        behaviour_book = {'Drink Water': [self.search, "Drink"]}
-
-        behaviour_book[self.goal["Current Goal"]]
+        self.goal_to_plan[self.goal["Goal"]["Actions"][0]](self.goal["Goal"]["Subject"][0])
 
         rand_move = random.randint(0, 100)
 
@@ -64,9 +61,9 @@ class rat:
 
         # Run through priority tree.
         if self.hydration < 50:
-            self.goal["Current Goal"] = "Drink Water"
+            self.goal["Goal"] = {"Actions" : ["Find","Consume"], "Subject" : ["Drink"]}
         elif self.fullness < 50:
-            self.goal["Current Goal"] = "Eat Food"
+            self.goal["Goal"] = {"Actions" : ["Find","Consume"], "Subject" : ["Food"]}
 
     def examine_surroundings(self, active_rats, g_engine):
 
@@ -93,12 +90,12 @@ class rat:
                 except IndexError:
                     in_sight_local[idx_y][idx_x] = "X"
 
-    def search(self):
-        print("hi")
+    def search(self,search_for):
+        print(f'Searching for {search_for}')
         pass
 
-    def eat(self, food):
-        self.fullness = self.fullness - food.hunger_value
+    def consume(self, object):
+        self.fullness = self.fullness - object.hunger_value
 
     def move(self, x_move, y_move, active_rats, g_engine):
 
